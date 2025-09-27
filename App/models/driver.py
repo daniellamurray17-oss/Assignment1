@@ -19,12 +19,22 @@ class Driver(db.Model):
         self.contact = contact
 
     def set_password(self, password):
-        """Hashes the password for storage."""
+        """Hashes the password before saving."""
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        """Verifies the password."""
+        """Verifies the password against the hash."""
         return check_password_hash(self.password, password)
+
+    def get_json(self):
+        """Return a JSON-friendly dict of driver details."""
+        return {
+            "id": self.id,
+            "username": self.username,
+            "contact": self.contact,
+            "routes": [r.id for r in self.routes],
+            "notifications": [n.id for n in self.notifications]
+        }
 
     def __repr__(self):
         return f"<Driver id={self.id} username={self.username}>"

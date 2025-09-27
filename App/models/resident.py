@@ -21,12 +21,23 @@ class Resident(db.Model):
         self.street_id = street_id
 
     def set_password(self, password):
-        """Hashes the password for storage."""
+        """Hashes the password before saving."""
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        """Verifies the password."""
+        """Verifies the password against the hash."""
         return check_password_hash(self.password, password)
+
+    def get_json(self):
+        """Return a JSON-friendly dict of resident details."""
+        return {
+            "id": self.id,
+            "username": self.username,
+            "contact": self.contact,
+            "street_id": self.street_id,
+            "stop_requests": [req.id for req in self.stop_requests],
+            "notifications": [n.id for n in self.notifications]
+        }
 
     def __repr__(self):
         return f"<Resident id={self.id} username={self.username} street_id={self.street_id}>"
